@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.params import Query
 
 from app.db import init_db
-from app.nasa_api import get_insight_data, store_data
+from app.nasa_api import store_data
+from app.gemini import query_gemini_api
 
 @asynccontextmanager
 async def startup_event(app: FastAPI):
@@ -17,4 +19,7 @@ async def read_root():
 @app.get("/fetch-and-store-data")
 async def fetch_and_store_data():
     return store_data()
-    
+
+@app.get("/gemini-prompt")
+async def gemini_prompt(query: str = Query(str, description="Your question about Mars weather")):
+    return query_gemini_api(query)

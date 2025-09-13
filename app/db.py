@@ -27,3 +27,11 @@ def insert_weather_sol(rows: List[WeatherSol], database: str = database):
     ''', data_tuples)
     connection.commit()
     connection.close()
+    
+def get_all_weather_sols(database: str = database) -> List[WeatherSol]:
+    connection = sqlite3.connect(database)
+    cursor = connection.cursor()
+    cursor.execute('SELECT sol, temp_av, temp_max, temp_min, season FROM weather_sol')
+    rows = cursor.fetchall()
+    connection.close()
+    return [WeatherSol(sol=row[0], temp_av=row[1], temp_max=row[2], temp_min=row[3], season=row[4]) for row in rows]
